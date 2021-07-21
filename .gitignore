@@ -127,3 +127,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Mine filer
+creds.txt
+test.py
+creds.json
+gc.json
+gc2.json
+p.json

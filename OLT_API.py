@@ -43,11 +43,14 @@ class olt():
                 from json import load
                 payload = load(fil)
         resultat = self.req.post(f"https://api.olt-dagbok.nif.no/api/v1/users/{self.info['id']}/workouts", headers={"Authorization": "Bearer "+self.info["token"]}, data=payload)
-        if self.debug:
-            print("økt")
-            print(resultat.status_code)
+        print(resultat.status_code)
+        if resultat.status_code != 201:
             print(resultat.text)
-        if resultat != 201:
+        else:
+            if self.debug:
+                print("økt")
+                print(resultat.text)
+        if resultat.status_code != 201:
             return False
         return True
     
@@ -62,7 +65,9 @@ class olt():
 
 
 if __name__ == "__main__":
-    olt = olt("aune150@gmail.com", "aB6YUdHl", debug=True)
-    with open("p.json", "r") as f:
+    with open("creds.txt", "r") as f:
+        creds = f.read().split("\n")
+    olt = olt(creds[0], creds[1], debug=False)
+    """with open("p.json", "r") as f:
         payload = f.read()
-    olt.økt(payload=payload)
+    olt.økt(payload=payload)"""

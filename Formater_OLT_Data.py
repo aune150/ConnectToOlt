@@ -1,4 +1,4 @@
-
+import json
 
 class formater():
     def __init__(self, debug:bool=False) -> None:
@@ -17,36 +17,38 @@ class formater():
             "kommentar":
             "belastning":
             "dagsform":
-            "oppvarming":
-            {
-                "kilometer":"2,35"
-                "type": RunningTerrain | RunningPath
-                "i1":
-                "i2":
-                "i3":
-                "i4":
-                "i5":
-            }
-            "hoveddel":
-            {
-                "kilometer":"2,35"
-                "type": RunningTerrain | RunningPath
-                "i1":
-                "i2":
-                "i3":
-                "i4":
-                "i5":
-            }
-            "avslutting":
-            {
-                "kilometer":"2,35"
-                "type": RunningTerrain | RunningPath
-                "i1":
-                "i2":
-                "i3":
-                "i4":
-                "i5":
-            }
+            "deler":{
+                "oppvarming":
+                {
+                    "kilometer":"2,35"
+                    "type": RunningTerrain | RunningPath
+                    "i1":
+                    "i2":
+                    "i3":
+                    "i4":
+                    "i5":
+                },
+                "hoveddel":
+                {
+                    "kilometer":"2,35"
+                    "type": RunningTerrain | RunningPath
+                    "i1":
+                    "i2":
+                    "i3":
+                    "i4":
+                    "i5":
+                },
+                "avslutting":
+                {
+                    "kilometer":"2,35"
+                    "type": RunningTerrain | RunningPath
+                    "i1":
+                    "i2":
+                    "i3":
+                    "i4":
+                    "i5":
+                },
+            },
         }
         """
         pointer = 0
@@ -67,7 +69,7 @@ class formater():
         d["meta"]["included"]["cells"] = []
         for dell in data["deler"]:
             for item in data["deler"][dell]:
-                print(item)
+                #print(item)
                 if item == "type":
                     pointer += 1
                     d["meta"]["included"]["cells"].append({
@@ -129,7 +131,7 @@ class formater():
             l.append({"pointer": f"/meta/included/cells/{i}"})
         d["data"]["meta"]["relationships"]["cells"]["data"] = l
 
-        return d
+        return json.dumps(d)
 
 
 #f = formater()
