@@ -1,6 +1,7 @@
 from garminconnect import *
 from datetime import date
 import logging
+import time
 
 
 #logging.basicConfig(level=logging.DEBUG)
@@ -31,6 +32,7 @@ class connect:
                 if self.debug:
                     print("Error occurred during Garmin Connect Client login: %s" % err)
                 self.innlogget = False
+                time.sleep(2)
         
         for i in range(5):
             if not self.innlogget:
@@ -53,7 +55,7 @@ class connect:
         self.hr_timezones = self.client.get_activity_hr_in_timezones(id)
         if self.debug:
             print(self.hr_timezones)
-        return self.creds["GarminConnect"]["password"]
+        return self.client.get_activity_hr_in_timezones(id)
 
 if __name__=="__main__":
     G = connect("aune150@gmail.com", "Nelnua34", debug=True)
