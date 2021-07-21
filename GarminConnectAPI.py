@@ -3,6 +3,8 @@ from datetime import date
 import logging
 import time
 
+def quit():
+    exit()
 
 #logging.basicConfig(level=logging.DEBUG)
 #logger = logging.getLogger(__name__)
@@ -34,7 +36,7 @@ class connect:
                 self.innlogget = False
                 time.sleep(2)
         
-        for i in range(5):
+        for i in range(10):
             if not self.innlogget:
                 prøv()
         if not self.innlogget:
@@ -49,6 +51,22 @@ class connect:
         if self.debug:
             print(self.aktiviteter)
     
+    def aktiv_per_dag(self, fra_dag, til_dag, type_aktivitet:str=None):
+        """Fetch available activities between specific dates
+
+        :param fra_dag: String in the format YYYY-MM-DD
+        :param til_dag: String in the format YYYY-MM-DD
+        :param type_aktivitet: (Optional) Type of activity you are searching
+                             Possible values are [cycling, running, swimming,
+                             multi_sport, fitness_equipment, hiking, walking, other]
+        :return: list of JSON activities"""
+
+
+        #if type_aktivitet:
+        self.aktiviteter = self.client.get_activities_by_date(fra_dag, til_dag, type_aktivitet)
+        if self.debug:
+            print(self.aktiviteter)
+        return self.aktiviteter
 
     def puls(self, id:int) -> list:
         self.hr_timezones:list

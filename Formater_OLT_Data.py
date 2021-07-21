@@ -102,7 +102,7 @@ class formater():
                         "groupLabel": "Orienteering.Kilometer"
                     }
                     })
-                elif item[0] == "I":
+                elif item[0] == "I" or item[0] == "i":
                     pointer += 1
                     d["meta"]["included"]["cells"].append({
                     "type": "cells",
