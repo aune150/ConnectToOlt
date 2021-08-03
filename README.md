@@ -14,4 +14,13 @@ Bruk git clone https://github.com/aune150/ConnectToOlt
 
 <h3>Lagre passord og brukernavn</h3>
 Lag en creds.json fil med innholdet:
-{"GarminConnect":{"password":"PASSORD", "username":"BRUKERNAVN"}, "OLT":{"password":"PASSORD", "username":"BRUKERNAVN"}}
+{
+  "GarminConnect":{
+    "password":"PASSORD", 
+    "username":"BRUKERNAVN"
+    }, 
+    "OLT":{
+    "password":"PASSORD", 
+    "username":"BRUKERNAVN"
+    }
+}
