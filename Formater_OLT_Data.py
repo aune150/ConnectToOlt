@@ -52,7 +52,16 @@ class formater():
         }
         """
         pointer = 0
-        ordbok = {"oppvarming":"Start", "hoveddel":"Main", "avsluttning":"End"}
+        ordbok = {
+            "oppvarming":"Start",
+            "hoveddel":"Main",
+            "avsluttning":"End",
+            "1":"Easy",
+            "2":"Moderate",
+            "3":"LAT",
+            "4":"HAT",
+            "5":"MaxO2"
+        }
         d = {}
         d["meta"] = {"included":{}}
 
@@ -69,7 +78,8 @@ class formater():
         d["meta"]["included"]["cells"] = []
         for dell in data["deler"]:
             for item in data["deler"][dell]:
-                #print(item)
+                if self.debug:
+                    print(item)
                 if item == "type":
                     pointer += 1
                     d["meta"]["included"]["cells"].append({
@@ -89,18 +99,18 @@ class formater():
                 elif item == "kilometer":
                     pointer += 1
                     d["meta"]["included"]["cells"].append({
-                    "type": "cells",
-                    "attributes": {
-                        "value": data['deler'][dell][item],
-                        "tagLabel": "Orienteering.Kilometers",
-                        "position": 0,
-                        "phaseLabel": f"Orienteering.Training.TrainingPhase{ordbok[dell]}",
-                        "fragmentType": {
-                            "id": "1",
-                            "name": "Movement"
-                        },
-                        "groupLabel": "Orienteering.Kilometer"
-                    }
+                        "type": "cells",
+                        "attributes": {
+                            "value": data['deler'][dell][item],
+                            "tagLabel": "Orienteering.Kilometers",
+                            "position": 0,
+                            "phaseLabel": f"Orienteering.Training.TrainingPhase{ordbok[dell]}",
+                            "fragmentType": {
+                                "id": "1",
+                                "name": "Movement"
+                            },
+                            "groupLabel": "Orienteering.Kilometer"
+                        }
                     })
                 elif item[0] == "I" or item[0] == "i":
                     pointer += 1
@@ -108,7 +118,7 @@ class formater():
                     "type": "cells",
                     "attributes": {
                         "value": data['deler'][dell][item],
-                        "tagLabel": f"Orienteering.EnduranceI{item[1:]}",
+                        "tagLabel": f"Orienteering.EnduranceI{item[1]}{ordbok[item[1]]}",
                         "position": 0,
                         "phaseLabel": f"Orienteering.Training.TrainingPhase{ordbok[dell]}",
                         "fragmentType": {
@@ -160,6 +170,6 @@ data = {
         }
 
 if __name__ == "__main__":
-    f = formater()
+    f = formater(debug=True)
     with open("p.json", "w", encoding="UTF-8") as fil:
         fil.write(str(f.økt(data = data)).replace("'", '"'))
