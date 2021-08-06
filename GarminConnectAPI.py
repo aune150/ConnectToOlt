@@ -34,7 +34,7 @@ class connect:
                 if self.debug:
                     print("Error occurred during Garmin Connect Client login: %s" % err)
                 self.innlogget = False
-                time.sleep(2)
+                time.sleep(1)
         
         for i in range(10):
             if not self.innlogget:
