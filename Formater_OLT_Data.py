@@ -99,18 +99,18 @@ class formater():
                 elif item == "kilometer":
                     pointer += 1
                     d["meta"]["included"]["cells"].append({
-                    "type": "cells",
-                    "attributes": {
-                        "value": data['deler'][dell][item],
-                        "tagLabel": "Orienteering.Kilometers",
-                        "position": 0,
-                        "phaseLabel": f"Orienteering.Training.TrainingPhase{ordbok[dell]}",
-                        "fragmentType": {
-                            "id": "1",
-                            "name": "Movement"
-                        },
-                        "groupLabel": "Orienteering.Kilometer"
-                    }
+                        "type": "cells",
+                        "attributes": {
+                            "value": data['deler'][dell][item],
+                            "tagLabel": "Orienteering.Kilometers",
+                            "position": 0,
+                            "phaseLabel": f"Orienteering.Training.TrainingPhase{ordbok[dell]}",
+                            "fragmentType": {
+                                "id": "1",
+                                "name": "Movement"
+                            },
+                            "groupLabel": "Orienteering.Kilometer"
+                        }
                     })
                 elif item[0] == "I" or item[0] == "i":
                     pointer += 1
