@@ -2,11 +2,12 @@ import requests as re
 
 
 class olt():
-    def __init__(self, username:str, password:str, debug:bool=False) -> None:
+    def __init__(self, username:str, password:str, debug:bool=False, auto_logginn:bool=True) -> None:
         self.info = {}
         self.req = re.Session()
         self.debug = debug
-        self.login(username, password)
+        if auto_logginn:
+            self.login(username, password)
     
     def login(self, username:str, password:str) -> bool:
         try:

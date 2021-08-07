@@ -4,21 +4,22 @@ import logging
 import time
 
 def quit():
-    exit()
+    import sys
+    sys.exit()
 
 #logging.basicConfig(level=logging.DEBUG)
 #logger = logging.getLogger(__name__)
 
 class connect:
-    def __init__(self, username:str, password:str, debug:bool=False) -> None:        
-        #self.today = date.today()
+    def __init__(self, username:str, password:str, debug:bool=False, app=False, auto_logginn:bool=True) -> None:        
         self.client = Garmin(username, password)
         self.debug = debug
         self.innlogget = False
-        self.loggInn()#username, password)
+        self.app = app
+        if auto_logginn:
+            self.loggInn()
     
-    def loggInn(self):#, username:str, password:str):
-        #self.client = Garmin(username, password)
+    def loggInn(self) -> bool:
         def prøv():
             print(1)
             try:
@@ -26,21 +27,29 @@ class connect:
                 self.innlogget = True
                 if self.debug:
                     print("Innlogget!")
+                return True
             except (
                 GarminConnectConnectionError,
                 GarminConnectAuthenticationError,
                 GarminConnectTooManyRequestsError,
             ) as err:
                 if self.debug:
+                    print(str(err))
                     print("Error occurred during Garmin Connect Client login: %s" % err)
                 self.innlogget = False
-                time.sleep(1)
+                return str(err)
         
-        for i in range(10):
-            if not self.innlogget:
-                prøv()
-        if not self.innlogget:
-            quit()
+        err = "Error connecting"
+        i = 0
+        while err != "Error connecting":
+            i += 1
+            err = prøv()
+            if self.app:
+                from app import C2O
+                C2O.logg(self.app, f"Prøver å koble til Garmin. Forsøk nr: {i}")
+            if i > 50:
+                quit()
+        return True
 
     
     def test(self):

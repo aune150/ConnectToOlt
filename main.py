@@ -6,11 +6,17 @@ import datetime
 
 
 class main:
-    def __init__(self, innstilinger=json.loads(open("C:/Users/aune1/NY/python/Connecttoolt/creds.json").read()), debug:bool=False, enkel=False) -> None:
-        self.debug, self.enkel = debug, enkel
-        self.GC = connect(innstilinger["garminconnect-username"], innstilinger["garminconnect-password"], debug=debug)
-        self.O = olt(innstilinger["olt-username"], innstilinger["olt-password"], debug=debug)
+    def __init__(self, innstilinger=json.loads(open("C:/Users/aune1/NY/python/Connecttoolt/creds.json").read()), debug:bool=False, enkel=False, app=False) -> None:
+        self.debug, self.enkel, self.innstilinger, self.app= debug, enkel, innstilinger, app
         self.F = formater()
+
+    def koble_OLT(self) -> bool:
+        self.O = olt(self.innstilinger["olt-username"], self.innstilinger["olt-password"], debug=self.debug, auto_logginn=False)
+        return self.O.login(self.innstilinger["olt-username"], self.innstilinger["olt-password"])
+    
+    def koble_GC(self) -> bool:
+        self.GC = connect(self.innstilinger["garminconnect-username"], self.innstilinger["garminconnect-password"], debug=self.debug, app=self.app)
+        return self.GC.loggInn()
 
     def get_økter(self, fra_dag, til_dag):
         "Lagrer økter i self.økt"
@@ -62,6 +68,8 @@ class main:
                 self.O.økt(self.F.økt(d))
 
 if __name__ == "__main__":
-    M = main()
+    M = main(debug=True)
+    M.koble_OLT()
+    M.koble_GC()
     M.get_økter(str(datetime.datetime.date(datetime.datetime.now())), str(datetime.datetime.date(datetime.datetime.now())))
     M.gå_igjennom_økter()
