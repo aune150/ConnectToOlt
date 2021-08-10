@@ -15,61 +15,81 @@ class main:
         return self.O.login(self.innstilinger["olt-username"], self.innstilinger["olt-password"])
     
     def koble_GC(self) -> bool:
-        self.GC = connect(self.innstilinger["garminconnect-username"], self.innstilinger["garminconnect-password"], debug=self.debug, app=self.app)
-        return self.GC.loggInn()
+        if self.app:
+            self.GC = connect(self.innstilinger["garminconnect-username"], self.innstilinger["garminconnect-password"], debug=self.debug, app=self.app, auto_logginn=False)
+        else:
+            self.GC = connect(self.innstilinger["garminconnect-username"], self.innstilinger["garminconnect-password"], debug=self.debug, app=self.app, auto_logginn=True)
+        self.GC.loggInn()
+        return self.GC.innlogget
 
     def get_økter(self, fra_dag, til_dag):
         "Lagrer økter i self.økt"
         self.økt = self.GC.aktiv_per_dag(fra_dag, til_dag)
 
-    def gå_igjennom_økter(self):
-        "Går igjennom alle økter i self.økt og sender til OLT"
-        for i in self.økt:
-            self.GC.puls(i["activityId"])
-            data = i
-            if data["activityType"]["typeKey"] == "running":
-                puls = self.GC.hr_timezones
+    def gå_igjennom_økter(self, data, svar={}):
+        '''Går igjennom økt og sender til OLT\n
+        Svar: {"navn":"", "type":"", "belastning":"", "dagsform":"", "kommentar":""}'''
+        
 
-                print("Dato: ", data["startTimeLocal"].split(" ")[0], "\n",
-                "Sted: ", data["activityName"], "\n",
-                "Distanse: ", data["distance"], "\n", 
-                "Varighet: ", datetime.timedelta(seconds=data["duration"]))
+        if data["activityType"]["typeKey"] == "running":
+            self.GC.puls(data["activityId"])
+            puls = self.GC.hr_timezones
 
-                if self.enkel:
-                    data["activityName"]
-                else:
-                    navn = input("Navn på økten: ")
 
-                d = {
-                    "navn": data["activityName"] if navn == "" else navn,
-                    "dato": data["startTimeLocal"].split(" ")[0],
-                    "belastning":input("Belastning: "),
-                    "dagsform":input("Dagsform: "),
-                    "deler":{
-                        "hoveddel":{
-                            "kilometer":round(data["distance"]/1000, 2),
-                            "type": "RunningTerrain" if input("Type løping (T-erreng eller V-ei): ") == "T" else "RunningPath",
-                        },
+            d = {
+                "navn": data["activityName"],
+                "dato": data["startTimeLocal"].split(" ")[0],
+                "deler":{
+                    "hoveddel":{
+                        "kilometer":round(data["distance"]/1000, 2)
                     },
-                }
-                
-                if self.enkel:
-                    d["kommentar"] = ""
+                },
+            }
+
+            if self.enkel:
+                # Hvis enkel mudus er skrudd på
+                d["belastning"] = 5
+                d["dagsform"] = 5
+                d["kommentar"] = ""
+                if data["averageSpeed"] > 6/3.6:
+                    d["deler"]["hovddel"]["type"] = "RunningPath"
                 else:
+                    d["deler"]["hovddel"]["type"] = "RunningTerrain"
+            else:
+                if self.app:
+                    # Hvis det kommer fra appen med ordboka svar
+                    d["deler"]["hoveddel"]["type"] = svar["type"]
+                    d["belastning"]=svar["belastning"]
+                    d["dagsform"]=svar["dagsform"]
+                    d["kommentar"] = svar["kommentar"]
+                    d["navn"] = svar["navn"]
+                else:
+                    # Hvis den kjøres i terminalen og bruker input()
+                    print("Dato: ", data["startTimeLocal"].split(" ")[0], "\n",
+                    "Sted: ", data["activityName"], "\n",
+                    "Distanse: ", data["distance"], "\n", 
+                    "Varighet: ", datetime.timedelta(seconds=data["duration"]))
+
+                    navn = input("Navn på økten: ")
+                    if navn != "":
+                        d["navn"] = navn
+                    d["deler"]["hoveddel"]["type"] = "RunningTerrain" if input("Type løping (T-erreng eller V-ei): ") == "T" else "RunningPath"
+                    d["belastning"]=input("Belastning: ")
+                    d["dagsform"]=input("Dagsform: ")
                     d["kommentar"] = input("Kommentar på økten:\n")
-                
 
-                for sone in puls:
-                    d["deler"]["hoveddel"]["i"+str(sone["zoneNumber"])] = round(sone["secsInZone"]/60)
+            for sone in puls:
+                d["deler"]["hoveddel"]["i"+str(sone["zoneNumber"])] = round(sone["secsInZone"]/60)
 
-                if self.debug:
-                    print(d)
+            if self.debug:
+                print(d)
 
-                self.O.økt(self.F.økt(d))
+            self.O.økt(self.F.økt(d))
 
 if __name__ == "__main__":
     M = main(debug=True)
     M.koble_OLT()
     M.koble_GC()
     M.get_økter(str(datetime.datetime.date(datetime.datetime.now())), str(datetime.datetime.date(datetime.datetime.now())))
-    M.gå_igjennom_økter()
+    for økt in M.økt:
+        M.gå_igjennom_økter(økt)

@@ -11,7 +11,7 @@ def quit():
 #logger = logging.getLogger(__name__)
 
 class connect:
-    def __init__(self, username:str, password:str, debug:bool=False, app=False, auto_logginn:bool=True) -> None:        
+    def __init__(self, username:str, password:str, debug:bool=False, app=False, auto_logginn:bool=True) -> None:
         self.client = Garmin(username, password)
         self.debug = debug
         self.innlogget = False
@@ -41,7 +41,7 @@ class connect:
         
         err = "Error connecting"
         i = 0
-        while err != "Error connecting":
+        while err == "Error connecting":
             i += 1
             err = prøv()
             if self.app:
@@ -49,7 +49,7 @@ class connect:
                 C2O.logg(self.app, f"Prøver å koble til Garmin. Forsøk nr: {i}")
             if i > 50:
                 quit()
-        return True
+        #return True
 
     
     def test(self):
