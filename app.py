@@ -1,4 +1,5 @@
 from kivy.lang.builder import Builder
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.widget import Widget
 from kivymd.app import MDApp
 from kivymd.uix.picker import MDDatePicker
@@ -7,6 +8,8 @@ from main import main
 from datetime import datetime
 from kivymd.uix.label import MDLabel
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.uix.popup import Popup
+from kivy.uix.floatlayout import FloatLayout
 
 
 #MDLabel().h
@@ -65,7 +68,7 @@ jdata = str([
     { 
         "type": "bool",
         "title": "Enkel modus",
-        #"description": "Slår av muligheten for å velge egene navn",
+        "desc": "Slår av muligheten for å velge egene navn",
         "section": "section1",
         "key": "enkel"
     }
@@ -84,7 +87,7 @@ def read_ini(path:str) -> dict:
 def fra_HTML_to_RGBA100(kode:str, a:float=1) -> list:
     return [int(kode[0:2], 16)/256, int(kode[2:4], 16)/256, int(kode[4:6], 16)/256, 1]
 
-class hjem(Screen):
+class pop(FloatLayout):
     pass
 
 class C2O(MDApp):
@@ -98,8 +101,6 @@ class C2O(MDApp):
     økter = []
 
     def build(self):
-        #sm = ScreenManager()
-        #sm.add_widget(hjem(name='menu'))
         self.innstilinger = read_ini("c2o.ini")
         self.debug = True if self.innstilinger["debug"] == "1" else False
         self.enkel = True if self.innstilinger["enkel"] == "1" else False
@@ -109,8 +110,11 @@ class C2O(MDApp):
         self.root.ids.olt.text = f"OLT: {self.innstilinger['olt-username']}"
         self.root.ids.garmin.text = f"Garmin: {self.innstilinger['garminconnect-username']}"
         self.main = main(innstilinger=self.innstilinger, debug=self.debug, enkel=self.enkel, app=self)
-        #return sm
-    
+
+    def on_config_change(self, *args):
+        self.logg(args)
+        self.build()
+
     def koble_til_olt(self):
         if self.main.koble_OLT():
             self.root.ids.olt_icon.icon = "check-circle"
@@ -179,13 +183,27 @@ class C2O(MDApp):
             self.logg("Velg datoer før du henter økter")
     
     def ga_igjennom(self):
-        if len(self.økter) != 0:
-            if not self.olt_innlogget:
-                self.logg("Prøv å koble til OLT før du går igjennom økter")
-            else:
-                pass
-        else:
-            self.logg("Prøv å hente noen økter først")
+        #if len(self.økter) != 0:
+        #if not self.olt_innlogget:
+        #    self.logg("Prøv å koble til OLT før du går igjennom økter")
+        #else:
+        #    svar = {"navn":"", "type":"", "belastning":"", "dagsform":"", "kommentar":""}
+            #self.main.gå_igjennom_økter(self.økter[0], svar)
+            #Popup(title="Hello", content=pop()).open()
+        p = pop()
+        self.popupW = Popup(title="Hello", content=p)
+        self.popupW.open()
+        #else:
+        #    self.logg("Prøv å hente noen økter først")
+    
+    def pop_avbryt(self):
+        self.popupW.dismiss()
+        self.logg("Du avbrøt gjennomgangen")
+    
+    def pop_lagre(self):
+        self.logg("Sendte 1 økt til OLT", self.root.ids.hello)
+        self.popupW.dismiss()
+        
     
         
 

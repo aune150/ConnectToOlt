@@ -1,4 +1,6 @@
 #:kivy 2.0.0
+# import factory kivy.factory.Factory
+
 GridLayout:
     cols: 1
 
@@ -83,3 +85,28 @@ GridLayout:
         size_hint_y: None
         height: 30
         id: logg
+
+<pop>:
+    cols: 1
+    Label:
+        text: "Dette er meg"
+        size_hint: (.6, .2)
+        pos_hint: {"x":0.2, "top":1}
+    MDTextField:
+        hint_text: "Hello"
+        size_hint: (.8, .1)
+        pos_hint: {"x":0.1, "y":0.4}
+        id: hello
+    MDRaisedButton:
+        text: "Avbryt"
+        size_hint: (.4, .2)
+        pos_hint: {"x":0.1, "y":0.1}
+        on_release: app.pop_avbryt()
+        #theme_color: "Custom"
+        md_bg_color: app.red
+    MDRaisedButton:
+        text: "Lagre"
+        size_hint: (.4, .2)
+        pos_hint: {"x":0.5, "y":0.1}
+        on_release: app.pop_lagre()
+        color: app.theme_cls.primary_palette
