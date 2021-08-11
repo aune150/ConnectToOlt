@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #:kivy 2.0.0
 # import factory kivy.factory.Factory
 
@@ -85,3 +86,92 @@ GridLayout:
         size_hint_y: None
         height: 30
         id: logg
+=======
+#:kivy 2.0.0
+# import factory kivy.factory.Factory
+
+GridLayout:
+    cols: 1
+
+    MDToolbar:
+        id: toolbar
+        title: "Example Banners"
+        elevation: 10
+        pos_hint: {'top': 1}
+        right_action_items: [["cog-outline", lambda x: app.open_settings()]]
+#    Widget:
+#        size_hint_y: None
+#        height: 6
+#        Canvas:
+#            Color:
+#                rgb: 0,0,0
+#            Rectangle:
+#                pos: 0, seperator.center_y
+#                size: seperator.width, 2
+    GridLayout:
+        cols: 3
+        MDLabel:
+            text: "OLT"
+            size_hint_y: None
+            height: 30
+            id: olt
+        MDIconButton:
+            icon: "close-circle"
+            theme_text_color: "Custom"
+            text_color: app.red
+            id: olt_icon
+        MDRaisedButton:
+            text: "Koble til"
+            color: app.theme_cls.primary_palette
+            on_release: app.koble_til_olt()
+            id: olt_koble
+        MDLabel:
+            text: "Garmin"
+            size_hint_y: None
+            height: 30
+            id: garmin
+        MDIconButton:
+            icon: "close-circle"
+            theme_text_color: "Custom"
+            text_color: app.red
+            id: garmin_icon
+        MDRaisedButton:
+            text: "Koble til"
+            color: app.theme_cls.primary_palette
+            on_release: app.koble_til_gc()
+            id: garmin_koble
+    GridLayout:
+        cols: 2
+        GridLayout:
+            cols: 1
+            MDRaisedButton:
+                text: "Velg dato"
+                color: app.theme_cls.primary_palette
+                on_release: app.show_date_picker()
+            GridLayout:
+                cols: 2
+                MDLabel:
+                    text: "Fra-Dato"
+                    id: fra_dato
+                MDLabel:
+                    text: "Til-Dato"
+                    id: til_dato
+            MDRaisedButton:
+                text: "Hent"
+                on_release: app.hent_okter()
+                color: app.theme_cls.primary_palette
+        GridLayout:
+            cols: 1
+            MDRaisedButton:
+                text: "Gå gjennom"
+                on_release: app.ga_igjennom()
+                color: app.theme_cls.primary_palette
+            MDLabel:
+                text: ""
+                id: rest_økter
+    MDLabel:
+        text: "Logg"
+        size_hint_y: None
+        height: 30
+        id: logg
+>>>>>>> 562ca6a4e8cb978866474abaf2e7473257e85b24
