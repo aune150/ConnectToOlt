@@ -19,7 +19,7 @@ class connect:
     
     def loggInn(self) -> bool:
         def prøv():
-            print(1)
+            #print(1)
             try:
                 self.client.login()
                 self.innlogget = True
@@ -45,7 +45,7 @@ class connect:
             if self.app:
                 from app import C2O
                 C2O.logg(self.app, f"Prøver å koble til Garmin. Forsøk nr: {i}")
-            if i > 50:
+            if i > 15:
                 quit()
 
     

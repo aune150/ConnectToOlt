@@ -1,18 +1,12 @@
 from kivy.lang.builder import Builder
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.widget import Widget
 from kivymd.app import MDApp
 from kivymd.uix.picker import MDDatePicker
-#from kivy.properties import ObjectProperty
 from main import main
-from datetime import datetime
-from kivymd.uix.label import MDLabel
-from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.popup import Popup
 from kivy.uix.floatlayout import FloatLayout
+from kivy.properties import StringProperty
 
 
-#MDLabel().h
 
 jdata = str([
     {
@@ -63,15 +57,15 @@ jdata = str([
         "title": "Debug",
         "section": "section1",
         "key": "debug"
-    },
+    }#,
 
-    { 
-        "type": "bool",
-        "title": "Enkel modus",
-        "desc": "Slår av muligheten for å velge egene navn",
-        "section": "section1",
-        "key": "enkel"
-    }
+    #{ 
+    #    "type": "bool",
+    #    "title": "Enkel modus",
+    #    "desc": "Slår av muligheten for å velge egene navn",
+    #    "section": "section1",
+    #    "key": "enkel"
+    #}
 ]).replace("'", '"')
 
 def read_ini(path:str) -> dict:
@@ -90,6 +84,9 @@ def fra_HTML_to_RGBA100(kode:str, a:float=1) -> list:
 class pop(FloatLayout):
     pass
 
+class CustomPopup(Popup):
+    pass
+
 class C2O(MDApp):
 
     green = fra_HTML_to_RGBA100("43A047")
@@ -99,11 +96,12 @@ class C2O(MDApp):
     olt_innlogget = False
     date_range = []
     økter = []
+    popup_text = StringProperty()
 
     def build(self):
         self.innstilinger = read_ini("c2o.ini")
         self.debug = True if self.innstilinger["debug"] == "1" else False
-        self.enkel = True if self.innstilinger["enkel"] == "1" else False
+        self.enkel = True# if self.innstilinger["enkel"] == "1" else False
         self.theme_cls.theme_style = "Light"
         self.theme_cls.primary_palette = "Blue"
         Builder.load_file("C2O.kv")
@@ -111,27 +109,40 @@ class C2O(MDApp):
         self.root.ids.garmin.text = f"Garmin: {self.innstilinger['garminconnect-username']}"
         self.main = main(innstilinger=self.innstilinger, debug=self.debug, enkel=self.enkel, app=self)
 
+    def build_U(self):
+        self.innstilinger = read_ini("c2o.ini")
+        self.debug = True if self.innstilinger["debug"] == "1" else False
+        self.enkel = True# if self.innstilinger["enkel"] == "1" else False
+        self.root.ids.olt.text = f"OLT: {self.innstilinger['olt-username']}"
+        self.root.ids.garmin.text = f"Garmin: {self.innstilinger['garminconnect-username']}"
+        self.main = main(innstilinger=self.innstilinger, debug=self.debug, enkel=self.enkel, app=self)
+
     def on_config_change(self, *args):
-        self.logg(args)
-        self.build()
+        self.build_U()
 
     def koble_til_olt(self):
-        if self.main.koble_OLT():
-            self.root.ids.olt_icon.icon = "check-circle"
-            self.root.ids.olt_icon.text_color = self.green
-            self.root.ids.olt_koble.color = self.grey
-            self.root.ids.olt_koble.on_release = self.test
-            self.logg("Koblet til OLT")
-            self.olt_innlogget = True
+        if self.innstilinger["olt-username"] and self.innstilinger["olt-password"]:
+            if self.main.koble_OLT():
+                self.root.ids.olt_icon.icon = "check-circle"
+                self.root.ids.olt_icon.text_color = self.green
+                self.root.ids.olt_koble.color = self.grey
+                self.root.ids.olt_koble.on_release = self.test
+                self.logg("Koblet til OLT")
+                self.olt_innlogget = True
+        else:
+            self.logg("Legg inn brukernavn og passord til OLT i innstingene før du kobler til")
 
     def koble_til_gc(self):
-        if self.main.koble_GC():
-            self.root.ids.garmin_icon.icon = "check-circle"
-            self.root.ids.garmin_icon.text_color = self.green
-            self.root.ids.garmin_koble.color = self.grey
-            self.root.ids.garmin_koble.on_release = self.test
-            self.logg("Koblet til Garmin")
-            self.gc_innlogget = True
+        if self.innstilinger["garminconnect-username"] and self.innstilinger["garminconnect-password"]:
+            if self.main.koble_GC():
+                self.root.ids.garmin_icon.icon = "check-circle"
+                self.root.ids.garmin_icon.text_color = self.green
+                self.root.ids.garmin_koble.color = self.grey
+                self.root.ids.garmin_koble.on_release = self.test
+                self.logg("Koblet til Garmin")
+                self.gc_innlogget = True
+        else:
+            self.logg("Legg inn brukernavn og passord til Garmin i innstingene før du kobler til")
 
     def get_date(self, instance, date, date_range):
         if self.debug:
@@ -183,18 +194,15 @@ class C2O(MDApp):
             self.logg("Velg datoer før du henter økter")
     
     def ga_igjennom(self):
-        #if len(self.økter) != 0:
-        #if not self.olt_innlogget:
-        #    self.logg("Prøv å koble til OLT før du går igjennom økter")
-        #else:
-        #    svar = {"navn":"", "type":"", "belastning":"", "dagsform":"", "kommentar":""}
-            #self.main.gå_igjennom_økter(self.økter[0], svar)
-            #Popup(title="Hello", content=pop()).open()
-        p = pop()
-        self.popupW = Popup(title="Hello", content=p)
-        self.popupW.open()
-        #else:
-        #    self.logg("Prøv å hente noen økter først")
+        if len(self.økter) != 0:
+            if not self.olt_innlogget:
+                self.logg("Prøv å koble til OLT før du går igjennom økter")
+            else:
+                for i in self.økter:
+                    self.root.ids.rest_økter.text = f"Antall økter igjen: {len(self.økter)}"
+                    self.main.gå_igjennom_økter(i)
+        else:
+            self.logg("Prøv å hente noen økter først")
     
     def pop_avbryt(self):
         self.popupW.dismiss()
@@ -203,12 +211,6 @@ class C2O(MDApp):
     def pop_lagre(self):
         self.logg("Sendte 1 økt til OLT", self.root.ids.hello)
         self.popupW.dismiss()
-        
-    
-        
-
-
-        
 
 
 if __name__ == "__main__":
