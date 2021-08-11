@@ -50,11 +50,17 @@ class main:
                 # Hvis enkel mudus er skrudd på
                 d["belastning"] = 5
                 d["dagsform"] = 5
-                d["kommentar"] = ""
                 if data["averageSpeed"] > 6/3.6:
-                    d["deler"]["hovddel"]["type"] = "RunningPath"
+                    d["deler"]["hoveddel"]["type"] = "RunningPath"
                 else:
-                    d["deler"]["hovddel"]["type"] = "RunningTerrain"
+                    d["deler"]["hoveddel"]["type"] = "RunningTerrain"
+                if data["description"] == "None" or data["description"] == None:
+                    d["kommentar"] = ""
+                else:
+                    d["kommentar"] = data["description"]
+                    if "&" in data["description"]:
+                        d["deler"]["hoveddel"]["type"] = "RunningTerrain" if data["description"].split("&")[1] == "T" else "RunningPath"
+                
             else:
                 if self.app:
                     # Hvis det kommer fra appen med ordboka svar
@@ -87,9 +93,9 @@ class main:
             self.O.økt(self.F.økt(d))
 
 if __name__ == "__main__":
-    M = main(debug=True)
-    M.koble_OLT()
+    M = main(debug=True, enkel=True)
     M.koble_GC()
+    M.koble_OLT()
     M.get_økter(str(datetime.datetime.date(datetime.datetime.now())), str(datetime.datetime.date(datetime.datetime.now())))
     for økt in M.økt:
         M.gå_igjennom_økter(økt)
