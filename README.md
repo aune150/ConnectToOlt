@@ -11,6 +11,7 @@ For å få Garmin API til å fungere første gang må man logge inn på nytt og 
 <h1>Instalasjon:</h1>
 
 <h3>Last ned koden</h3>
-Bruk git clone https://github.com/aune150/ConnectToOlt \n
+Bruk git clone https://github.com/aune150/ConnectToOlt
+
 kjør app.py
 
