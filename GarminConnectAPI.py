@@ -1,14 +1,12 @@
 from garminconnect import *
 from datetime import date
-import logging
-import time
+
 
 def quit():
     import sys
     sys.exit()
 
-#logging.basicConfig(level=logging.DEBUG)
-#logger = logging.getLogger(__name__)
+
 
 class connect:
     def __init__(self, username:str, password:str, debug:bool=False, app=False, auto_logginn:bool=True) -> None:
@@ -49,7 +47,6 @@ class connect:
                 C2O.logg(self.app, f"Prøver å koble til Garmin. Forsøk nr: {i}")
             if i > 50:
                 quit()
-        #return True
 
     
     def test(self):
@@ -71,7 +68,6 @@ class connect:
         :return: list of JSON activities"""
 
 
-        #if type_aktivitet:
         self.aktiviteter = self.client.get_activities_by_date(fra_dag, til_dag, type_aktivitet)
         if self.debug:
             print(self.aktiviteter)

@@ -144,32 +144,6 @@ class formater():
         return json.dumps(d)
 
 
-#f = formater()
-
-data = {
-            "navn":"Testløp",
-            "dato":"2021-06-23",
-            "kommentar":"Et bra test løp",
-            "belastning":8,
-            "dagsform":4,
-            "deler":{
-                "hoveddel":{
-                    "kilometer":"2,35",
-                    "type": "RunningTerrain",
-                    "I1Easy":1,
-                    "I2Moderate":3,
-                    "I3LAT":6,
-                    "I4HAT":3,
-                    "I5MaxO2":1
-                },
-                "avsluttning":{
-                    "kilometer":"4.3",
-                    "I5MaxO2":20
-                }
-            }
-        }
 
 if __name__ == "__main__":
-    f = formater(debug=True)
-    with open("p.json", "w", encoding="UTF-8") as fil:
-        fil.write(str(f.økt(data = data)).replace("'", '"'))
+    print("Fotmater kan ikke kjøres på egenhånd")

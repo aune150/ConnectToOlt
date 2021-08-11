@@ -69,6 +69,4 @@ if __name__ == "__main__":
     with open("creds.txt", "r") as f:
         creds = f.read().split("\n")
     olt = olt(creds[0], creds[1], debug=False)
-    """with open("p.json", "r") as f:
-        payload = f.read()
-    olt.økt(payload=payload)"""
+
