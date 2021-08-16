@@ -6,7 +6,7 @@ import datetime
 
 
 class main:
-    def __init__(self, innstilinger=json.loads(open("C:/Users/aune1/NY/python/Connecttoolt/creds.json").read()), debug:bool=False, enkel=False, app=False) -> None:
+    def __init__(self, innstilinger={}, debug:bool=False, enkel=False, app=False) -> None:
         self.debug, self.enkel, self.innstilinger, self.app= debug, enkel, innstilinger, app
         self.F = formater()
 
