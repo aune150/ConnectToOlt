@@ -29,11 +29,31 @@ class main:
     def gå_igjennom_økter(self, data, svar={}):
         '''Går igjennom økt og sender til OLT\n
         Svar: {"navn":"", "type":"", "belastning":"", "dagsform":"", "kommentar":""}'''
+        self.GC.puls(data["activityId"])
+        puls = self.GC.hr_timezones
         
-
-        if data["activityType"]["typeKey"] == "running" or data["activityType"]["typeKey"] == "cycling":
-            self.GC.puls(data["activityId"])
-            puls = self.GC.hr_timezones
+        if datetime.fromisoformat(data["startTimeLocal"]).isoweekday() == 4:
+            d = {
+                "navn": data["activityName"],
+                "dato": data["startTimeLocal"].split(" ")[0],
+                "deler":{
+                    "oppvarming":{},
+                    "hoveddel":{},
+                    "avsluttning":{}
+                },
+            }
+            if data["activityType"]["typeKey"] == "running" and datetime.fromisoformat(data["startTimeLocal"]).hour < 12:
+                d["deler"]["oppvarming"]["type"] = "RunningPath"
+                d["deler"]["oppvarming"]["kilometer"] = round(data["distance"]/1000, 2)
+                for sone in puls:
+                    d["deler"]["oppvarming"]["i"+str(sone["zoneNumber"])] = round(sone["secsInZone"]/60)
+            elif data["activityType"]["typeKey"] == "other":
+                d["deler"]["hoveddel"]["type"] = "Other?"+str(round(data["duration"]/60))
+            elif data["activityType"]["typeKey"] == "strength_training":
+                d["deler"]["hoveddel"]["type"] = "StrengthGeneral?"+str(round(data["duration"]/60))
+        
+        elif data["activityType"]["typeKey"] == "running" or data["activityType"]["typeKey"] == "cycling":
+            
 
 
             d = {
