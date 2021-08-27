@@ -33,24 +33,28 @@ class main:
         puls = self.GC.hr_timezones
         
         if datetime.fromisoformat(data["startTimeLocal"]).isoweekday() == 4:
-            d = {
-                "navn": data["activityName"],
-                "dato": data["startTimeLocal"].split(" ")[0],
-                "deler":{
-                    "oppvarming":{},
-                    "hoveddel":{},
-                    "avsluttning":{}
-                },
-            }
+            if not self.d:
+                d = {
+                    "navn": data["activityName"],
+                    "dato": data["startTimeLocal"].split(" ")[0],
+                    "deler":{
+                        "oppvarming":{},
+                        "hoveddel":{
+                            "type":""
+                        },
+                        "avsluttning":{}
+                    },
+                }
+            
             if data["activityType"]["typeKey"] == "running" and datetime.fromisoformat(data["startTimeLocal"]).hour < 12:
-                d["deler"]["oppvarming"]["type"] = "RunningPath"
-                d["deler"]["oppvarming"]["kilometer"] = round(data["distance"]/1000, 2)
+                self.d["deler"]["oppvarming"]["type"] = "RunningPath"
+                self.d["deler"]["oppvarming"]["kilometer"] = round(data["distance"]/1000, 2)
                 for sone in puls:
-                    d["deler"]["oppvarming"]["i"+str(sone["zoneNumber"])] = round(sone["secsInZone"]/60)
+                    self.d["deler"]["oppvarming"]["i"+str(sone["zoneNumber"])] = round(sone["secsInZone"]/60)
             elif data["activityType"]["typeKey"] == "other":
-                d["deler"]["hoveddel"]["type"] = "Other?"+str(round(data["duration"]/60))
+                self.d["deler"]["hoveddel"]["type"] += "+Other?"+str(round(data["duration"]/60))
             elif data["activityType"]["typeKey"] == "strength_training":
-                d["deler"]["hoveddel"]["type"] = "StrengthGeneral?"+str(round(data["duration"]/60))
+                self.d["deler"]["hoveddel"]["type"] += "+StrengthGeneral?"+str(round(data["duration"]/60))
         
         elif data["activityType"]["typeKey"] == "running" or data["activityType"]["typeKey"] == "cycling":
             
@@ -86,10 +90,14 @@ class main:
             for sone in puls:
                 d["deler"]["hoveddel"]["i"+str(sone["zoneNumber"])] = round(sone["secsInZone"]/60)
 
-            if self.debug:
-                print(d)
+        if self.debug:
+            print(d)
 
+        if not self.d:
             self.O.økt(self.F.økt(d))
+        else:
+            if len(self.d["deler"]["hoveddel"]["type"]) == 3:
+                self.O.økt(self.F.økt(self.d))
 
 if __name__ == "__main__":
     M = main(debug=True, enkel=True)

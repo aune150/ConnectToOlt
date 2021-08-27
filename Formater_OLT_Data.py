@@ -81,22 +81,23 @@ class formater():
                 if self.debug:
                     print(item)
                 if item == "type":
-                    if data["deler"][dell][item].split("?")[0] == "Other" or data["deler"][dell][item].split("?")[0] == "StrengthGeneral":
-                        pointer += 1
-                        d["meta"]["included"]["cells"].append({
-                        "type": "cells",
-                        "attributes": {
-                            "value": int(data["deler"][dell][item].split("?")[1]),
-                            "tagLabel": f"Orienteering.Movement{data['deler'][dell][item]}",
-                            "position": 0,
-                            "phaseLabel": f"Orienteering.Training.TrainingPhase{ordbok[dell]}",
-                            "fragmentType": {
-                                "id": "3",
-                                "name": "Strength"
-                            },
-                            "groupLabel": "Orienteering.Strength"
-                        }
-                        })
+                    if (data["deler"][dell][item].split("+")[1][0] == "O" or data["deler"][dell][item].split("+")[1][0] == "S") and len(data["deler"][dell][item].split("+")) == 3:
+                        for navn in data["deler"][dell][item].split("+")[1:2]:
+                            pointer += 1
+                            d["meta"]["included"]["cells"].append({
+                                "type": "cells",
+                                "attributes": {
+                                    "value": int(data["deler"][dell][item].split("?")[1]),
+                                    "tagLabel": f"Orienteering.{navn}",
+                                    "position": 0,
+                                    "phaseLabel": f"Orienteering.Training.TrainingPhase{ordbok[dell]}",
+                                    "fragmentType": {
+                                        "id": "3",
+                                        "name": "Strength"
+                                    },
+                                    "groupLabel": "Orienteering.Strength"
+                                }
+                            })
                     else:
                         pointer += 1
                         d["meta"]["included"]["cells"].append({
