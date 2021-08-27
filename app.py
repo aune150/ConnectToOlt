@@ -84,11 +84,7 @@ def read_ini(path:str) -> dict:
 def fra_HTML_to_RGBA100(kode:str, a:float=1) -> list:
     return [int(kode[0:2], 16)/256, int(kode[2:4], 16)/256, int(kode[4:6], 16)/256, 1]
 
-class pop(FloatLayout):
-    pass
 
-class CustomPopup(Popup):
-    pass
 
 class C2O(MDApp):
 
@@ -202,7 +198,7 @@ class C2O(MDApp):
                 self.logg("Prøv å koble til OLT før du går igjennom økter")
             else:
                 for i in self.økter:
-                    self.root.ids.rest_økter.text = f"Antall økter igjen: {len(self.økter)}"
+                    #self.root.ids.rest_økter.text = f"Antall økter igjen: {len(self.økter)}"
                     self.main.gå_igjennom_økter(i)
         else:
             self.logg("Prøv å hente noen økter først")

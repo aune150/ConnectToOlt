@@ -31,7 +31,7 @@ class main:
         Svar: {"navn":"", "type":"", "belastning":"", "dagsform":"", "kommentar":""}'''
         
 
-        if data["activityType"]["typeKey"] == "running":
+        if data["activityType"]["typeKey"] == "running" or data["activityType"]["typeKey"] == "cycling":
             self.GC.puls(data["activityId"])
             puls = self.GC.hr_timezones
 
@@ -41,48 +41,27 @@ class main:
                 "dato": data["startTimeLocal"].split(" ")[0],
                 "deler":{
                     "hoveddel":{
-                        "kilometer":round(data["distance"]/1000, 2)
                     },
                 },
             }
 
-            if self.enkel:
-                # Hvis enkel mudus er skrudd på
-                d["belastning"] = 5
-                d["dagsform"] = 5
-                if data["averageSpeed"] > 6/3.6:
+            d["belastning"] = 5
+            d["dagsform"] = 5
+            if data["activityType"]["typeKey"] == "running":
+                d["deler"]["hoveddel"]["kilometer"]=round(data["distance"]/1000, 2)
+                if data["averageSpeed"] > 2.08:
                     d["deler"]["hoveddel"]["type"] = "RunningPath"
                 else:
                     d["deler"]["hoveddel"]["type"] = "RunningTerrain"
-                if data["description"] == "None" or data["description"] == None:
-                    d["kommentar"] = ""
-                else:
-                    d["kommentar"] = data["description"]
-                    if "&" in data["description"]:
-                        d["deler"]["hoveddel"]["type"] = "RunningTerrain" if data["description"].split("&")[1] == "T" else "RunningPath"
-                
+            elif data["activityType"]["typeKey"] == "cycling":
+                d["deler"]["hoveddel"]["type"] = "Cycling"
+            if data["description"] == "None" or data["description"] == None:
+                d["kommentar"] = ""
             else:
-                if self.app:
-                    # Hvis det kommer fra appen med ordboka svar
-                    d["deler"]["hoveddel"]["type"] = svar["type"]
-                    d["belastning"]=svar["belastning"]
-                    d["dagsform"]=svar["dagsform"]
-                    d["kommentar"] = svar["kommentar"]
-                    d["navn"] = svar["navn"]
-                else:
-                    # Hvis den kjøres i terminalen og bruker input()
-                    print("Dato: ", data["startTimeLocal"].split(" ")[0], "\n",
-                    "Sted: ", data["activityName"], "\n",
-                    "Distanse: ", data["distance"], "\n", 
-                    "Varighet: ", datetime.timedelta(seconds=data["duration"]))
-
-                    navn = input("Navn på økten: ")
-                    if navn != "":
-                        d["navn"] = navn
-                    d["deler"]["hoveddel"]["type"] = "RunningTerrain" if input("Type løping (T-erreng eller V-ei): ") == "T" else "RunningPath"
-                    d["belastning"]=input("Belastning: ")
-                    d["dagsform"]=input("Dagsform: ")
-                    d["kommentar"] = input("Kommentar på økten:\n")
+                d["kommentar"] = data["description"]
+                if "&" in data["description"]:
+                    d["deler"]["hoveddel"]["type"] = "RunningTerrain" if data["description"].split("&")[1] == "T" else "RunningPath"
+                
 
             for sone in puls:
                 d["deler"]["hoveddel"]["i"+str(sone["zoneNumber"])] = round(sone["secsInZone"]/60)
