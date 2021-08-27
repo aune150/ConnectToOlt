@@ -1,5 +1,5 @@
 import os
-os.environ["KIVY_NO_CONSOLELOG"] = "1"
+#os.environ["KIVY_NO_CONSOLELOG"] = "1"
 
 from kivy.lang.builder import Builder
 from kivymd.app import MDApp
@@ -198,6 +198,7 @@ class C2O(MDApp):
                 self.logg("Prøv å koble til OLT før du går igjennom økter")
             else:
                 for i in self.økter:
+                    print(i)
                     #self.root.ids.rest_økter.text = f"Antall økter igjen: {len(self.økter)}"
                     self.main.gå_igjennom_økter(i)
         else:

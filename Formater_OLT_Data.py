@@ -81,6 +81,7 @@ class formater():
                 if self.debug:
                     print(item)
                 if item == "type":
+                    #Må gjøres på en annen måte
                     if (data["deler"][dell][item].split("+")[1][0] == "O" or data["deler"][dell][item].split("+")[1][0] == "S") and len(data["deler"][dell][item].split("+")) == 3:
                         for navn in data["deler"][dell][item].split("+")[1:2]:
                             pointer += 1

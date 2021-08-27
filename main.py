@@ -2,10 +2,12 @@ import json
 from Formater_OLT_Data import formater
 from GarminConnectAPI import connect
 from OLT_API import olt
-import datetime
+from datetime import datetime
 
 
 class main:
+    d = False
+
     def __init__(self, innstilinger={}, debug:bool=False, enkel=False, app=False) -> None:
         self.debug, self.enkel, self.innstilinger, self.app= debug, enkel, innstilinger, app
         self.F = formater()
@@ -31,8 +33,9 @@ class main:
         Svar: {"navn":"", "type":"", "belastning":"", "dagsform":"", "kommentar":""}'''
         self.GC.puls(data["activityId"])
         puls = self.GC.hr_timezones
-        
+        print(datetime.fromisoformat(data["startTimeLocal"]).isoweekday())
         if datetime.fromisoformat(data["startTimeLocal"]).isoweekday() == 4:
+            print(str(round(data["duration"]/60)))
             if not self.d:
                 d = {
                     "navn": data["activityName"],

@@ -45,7 +45,7 @@ class connect:
             if self.app:
                 from app import C2O
                 C2O.logg(self.app, f"Prøver å koble til Garmin. Forsøk nr: {i}")
-            if i > 15:
+            if i > 2:
                 quit()
 
     
