@@ -1,0 +1,17 @@
+{% extends 'base.html'%} {% block content%}
+
+<h1>{%block title%}Kjør{%endblock%}</h1>
+
+<form method="post" action="">
+    {{form.hidden_tag()}} {{form.dato_fra}} {{form.dato_til}} {{form.kjør}}
+</form>
+{% for i in resultat %}{{str(datetime.fromisoformat(i["startTimeLocal"]).date())}} - {{i["activityName"]}}<br>{% endfor %}
+<br> {% if velg %}
+<form method="POST" action="{{url_for('olt')}}">
+    {{velg.hidden_tag()}}{{velg.valg}}{{velg.kjør}}
+
+</form>{% endif %}
+
+
+
+<!---->{% endblock %}

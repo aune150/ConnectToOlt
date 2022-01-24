@@ -1,0 +1,11 @@
+{% extends 'base.html' %}{% block content%}
+<h1>{% block title %}Min side{% endblock %}</h1>
+
+<h2>Hei {{bruker.email}}!</h2>
+<br>
+<form method="post" action="">
+    {{form.hidden_tag()}} <br> {{form.connect_bruker}} <br> {{form.connect_pass}} <br><br> {{form.olt_bruker}} <br> {{form.olt_pass}} <br><br> {{form.lagre}}
+</form>
+<br>
+<br>
+<a class="btn btn-danger" href="/loggut" role="button">Logg Ut</a> {%endblock%}

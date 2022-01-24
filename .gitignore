@@ -1,0 +1,10 @@
+/Include
+/Lib
+/Scripts
+/__pycache__
+/share
+pyvenv.cfg
+base.db
+test.json
+test.ipynb
+*.zip

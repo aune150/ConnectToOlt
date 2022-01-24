@@ -1,0 +1,8 @@
+{% extends 'base.html'%} {% block content%}
+
+<h1>{%block title%}Regrister{%endblock%}</h1>
+
+<form method="post" action="">
+    {{form.hidden_tag()}} {{form.brukernavn}} {{form.passord}} {{form.reg}}
+</form>
+<button><a href="/login">Logg inn?</a></button>{% endblock %}
